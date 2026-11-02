@@ -1,0 +1,9 @@
+{"sensor": "ssh_honeypot", "event": "connect", "ip": "127.0.0.1", "port": 57959, "ts": "2026-11-02T16:01:28.287411+00:00"}
+{"sensor": "ssh", "event": "login_attempt", "src_ip": "127.0.0.1", "username": "root", "password": "helloWorld", "client_version": "SSH-2.0-OpenSSH_10.3", "ts": "2026-11-02T16:01:35.821340+00:00"}
+{"sensor": "ssh", "event": "login_attempt", "src_ip": "127.0.0.1", "username": "root", "password": "salut", "client_version": "SSH-2.0-OpenSSH_10.3", "ts": "2026-11-02T16:01:38.304598+00:00"}
+{"sensor": "ssh", "event": "login_attempt", "src_ip": "127.0.0.1", "username": "root", "password": "blabla", "client_version": "SSH-2.0-OpenSSH_10.3", "ts": "2026-11-02T16:01:40.470511+00:00"}
+{"sensor": "ssh", "event": "login_attempt", "src_ip": "127.0.0.1", "username": "root", "password": "exit", "client_version": "SSH-2.0-OpenSSH_10.3", "ts": "2026-11-02T16:01:42.102801+00:00"}
+{"sensor": "ssh", "event": "login_attempt", "src_ip": "127.0.0.1", "username": "root", "password": "ssh", "client_version": "SSH-2.0-OpenSSH_10.3", "ts": "2026-11-02T16:01:47.618160+00:00"}
+{"sensor": "ssh", "event": "login_attempt", "src_ip": "127.0.0.1", "username": "root", "password": "ddd", "client_version": "SSH-2.0-OpenSSH_10.3", "ts": "2026-11-02T16:01:49.136355+00:00"}
+{"sensor": "ssh_honeypot", "event": "connect", "ip": "127.0.0.1", "port": 57962, "ts": "2026-11-02T16:02:27.775429+00:00"}
+{"sensor": "ssh", "event": "login_attempt", "src_ip": "127.0.0.1", "username": "root", "password": "helloMyFriend", "client_version": "SSH-2.0-OpenSSH_10.3", "ts": "2026-11-02T16:02:36.311210+00:00"}
