@@ -4,3 +4,8 @@
 ./data/
 ./data/ssh_host_key
 ./data/ssh_host_key.pub
+.venv/
+data/
+.env
+.git/
+__pycache__/
