@@ -9,7 +9,7 @@ class SSHHoneypot(asyncssh.SSHServer):
     def connection_made(self, conn):
         self.conn = conn
         self.ip, self.port = conn.get_extra_info('peername')[:2]
-        log_event(sensor="ssh_honeypot", event="connect", ip=self.ip, port=self.port)
+        log_event(sensor="ssh_honeypot", event="connect", src_ip=self.ip, src_port=self.port)
 
     def begin_auth(self, username):
         return True  # Allow authentication attempts
@@ -18,7 +18,7 @@ class SSHHoneypot(asyncssh.SSHServer):
         return True  # Support password authentication
 
     def validate_password(self, username, password):
-        log_event(sensor="ssh", event="login_attempt", src_ip=self.ip,
+        log_event(sensor="ssh_honeypot", event="login_attempt", src_ip=self.ip, src_port=self.port,
                   username=username, password=password,
                   client_version=self.conn.get_extra_info("client_version"))
         return False  # Always fail authentication
