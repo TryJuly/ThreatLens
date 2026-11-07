@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS events (
     event       TEXT NOT NULL,
     src_ip      INET NOT NULL,
     src_port    INT NOT NULL,
-    username    TEXT NOT NULL,
-    password    TEXT NOT NULL,
+    username    TEXT,
+    password    TEXT,
     data    JSONB
 );
 
