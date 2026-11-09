@@ -1,12 +1,15 @@
-from storage.ingest import to_row
-from storage.ingest import read_offset
-from storage.ingest import write_offset
-from storage.ingest import read_new_events
-from storage.ingest import ingest_once
-
-from psycopg.types.json import Jsonb
 from unittest.mock import MagicMock
 
+import psycopg
+from psycopg.types.json import Jsonb
+
+from storage.ingest import (
+    ingest_once,
+    read_new_events,
+    read_offset,
+    to_row,
+    write_offset,
+)
 
 #   —— to_row ——
 
@@ -84,11 +87,28 @@ def test_ingest_once(tmp_path):
     offset.write_text("0")
 
     assert ingest_once(mock_conn, str(file), str(offset)) == 1
-    check = mock_conn.cursor.return_value.__enter__.return_value.executemany.call_args[0][1][0]
+    check = mock_conn.cursor.return_value.__enter__.return_value.execute.call_args[0][1]
     assert check[:-1] == ("2024-06-01T12:00:00Z", "sensor1", "login", None, None, None, None)
 
     file.write_text('{"ts": "2024-06-01T12:00:00Z", "sensor": "sensor1", "event": "login"}')
 
     assert ingest_once(mock_conn, str(file), str(offset)) == 0
-    assert mock_conn.cursor.return_value.__enter__.return_value.executemany.call_count == 1, "On ne doit pas insérer de ligne si le fichier est incomplet"
+    assert mock_conn.cursor.return_value.__enter__.return_value.execute.call_count == 1, "On ne doit pas insérer de ligne si le fichier est incomplet"
+
+def test_ingest_once_skips_invalid_row(tmp_path):
+    mock_conn = MagicMock()
+    mock_conn.cursor.return_value.__enter__.return_value.execute.side_effect = [
+        psycopg.Error("contrainte violée"), None,
+    ]
+    file = tmp_path / "test_events.txt"
+    offset = tmp_path / "offset.txt"
+
+    file.write_text(
+        '{"ts": "2024-06-01T12:00:00Z", "sensor": "sensor1", "event": "login"}\n'
+        '{"ts": "2024-06-01T12:00:01Z", "sensor": "sensor1", "event": "login"}\n'
+    )
+    offset.write_text("0")
+
+    assert ingest_once(mock_conn, str(file), str(offset)) == 1, "La ligne en échec doit être ignorée, l'autre insérée"
+    assert read_offset(str(offset)) == file.stat().st_size, "L'offset doit avancer même si une ligne a échoué"
 

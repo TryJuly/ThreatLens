@@ -1,4 +1,7 @@
-import json, os, time
+import json
+import os
+import time
+
 import psycopg
 from psycopg.types.json import Jsonb
 
@@ -48,22 +51,26 @@ def read_new_events(offset: str, log_path: str) -> tuple[list[tuple], int]:
                 print(f"Ligne invalide ignorée (offset {error})")
     return rows, offset
 
-# lit les events non encore traités et les insère en base, puis avance l'offset
+# lit les events non encore traités et les insère en base (une ligne invalide est ignorée sans bloquer les autres), puis avance l'offset
 def ingest_once(conn: psycopg.Connection, log_path: str, offset_path: str) -> int:
     if not os.path.exists(log_path):
         return 0
     rows, new_offset = read_new_events(read_offset(offset_path), log_path)
-    if rows:
-        with conn.transaction():
-            with conn.cursor() as cur:
-                cur.executemany(
+    inserted = 0
+    for row in rows:
+        try:
+            with conn.transaction(), conn.cursor() as cur:
+                cur.execute(
                     """INSERT INTO events
-                       (ts, sensor, event, src_ip, src_port, username, password, data)
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                    rows,
+                           (ts, sensor, event, src_ip, src_port, username, password, data)
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                    row,
                 )
+            inserted += 1
+        except psycopg.Error as e:
+            print(f"Événement invalide ignoré : {e}")
     write_offset(new_offset, offset_path)
-    return len(rows)
+    return inserted
 
 # boucle principale : se connecte à la base et lance ingest_once toutes les INTERVAL secondes
 def main() -> None:
