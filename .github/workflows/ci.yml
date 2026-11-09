@@ -22,4 +22,4 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgresql://vigie:test@localhost:5432/vigie
-        run: pytest -q
+        run: python -m pytest -q
