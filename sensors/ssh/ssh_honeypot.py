@@ -1,9 +1,12 @@
-import asyncio, os
+import asyncio
+import os
+
 import asyncssh
+
 from common.logger import log_event
 
 HOST = os.environ.get("HOST", "127.0.0.1")
-PORT = int(os.environ.get("PORT", 2222))
+PORT = int(os.environ.get("PORT", "2222"))
 HOST_KEY_PATH = os.environ.get("HOST_KEY_PATH", "data/ssh_host_key")
 
 class SSHHoneypot(asyncssh.SSHServer):
