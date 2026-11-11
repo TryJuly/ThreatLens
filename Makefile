@@ -13,4 +13,7 @@ ruff:
 ruff-fix:
 	ruff check --fix .
 
-.PHONY: up clean fclean ruff ruff-fix
+ci:
+	DATABASE_URL=postgresql://vigie:test@localhost:5432/vigie python -m pytest -q
+
+.PHONY: up clean fclean ruff ruff-fix ci
