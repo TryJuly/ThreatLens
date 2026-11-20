@@ -1,3 +1,5 @@
 asyncssh
 psycopg[binary]
 geoip2
+fastapi
+uvicorn
